@@ -21,10 +21,12 @@ contract Ponzi {
 
     error Ponzi_PleaseSendMoreToken();
     error Ponzi_YouCannnotEnterWithOutReffralId();
-    error Ponzi_YourTransactionHasFaild();
+    error Ponzi_YourTransactionHasFailed();
     error Ponzi_YourReffralIdIsWrong();
+    error Ponzi_YouHaveParticipatedBefore();
     error Ponzi_TransferToWinnersHasFailed();
     error Ponzi_ThisIsNotTheTimeFotDistribution();
+
 
     event participated(address indexed user, address refrallId);
     event Rewarded();
@@ -37,12 +39,14 @@ contract Ponzi {
     address[] winners;
     uint256 public immutable initialTime;
     uint256 public constant REWARDADTER= 86400;
+    
 
     constructor(address myusdt){
         Owner=msg.sender;
         MYUSDT= IERC20(myusdt);
         users.push(msg.sender);
         initialTime=block.timestamp;
+        
     }
 
 
@@ -54,6 +58,11 @@ contract Ponzi {
             if (users[i] == reffralId ) {
                 exist=true;
             }}
+        for (uint i=1; i<users.length;i++){
+            if (users[i] == msg.sender ) {
+               revert Ponzi_YouHaveParticipatedBefore(); 
+            }
+        }
 
 
         if(amount < 100 ){
@@ -64,13 +73,13 @@ contract Ponzi {
             revert Ponzi_YourReffralIdIsWrong();
         }
 
-        bool success = MYUSDT.transferFrom(msg.sender, address(this), amount);
+        bool success = MYUSDT.transferFrom(msg.sender,address(this), amount);
 
         if (!success){
-            revert Ponzi_YourTransactionHasFaild();
+            revert Ponzi_YourTransactionHasFailed();
         }else{            
             users.push(msg.sender);
-            userToReffrals[msg.sender]++;
+            userToReffrals[reffralId]++;
         }
 
         emit participated(msg.sender,reffralId);
@@ -88,26 +97,48 @@ contract Ponzi {
         bool transferToOwner=false;
 
         for(uint256 i=0;i<users.length;i++){
-            if(userToReffrals[users[i]] >= Count){
+            if(userToReffrals[users[i]] == Count){
                 Count= userToReffrals[users[i]];
                 winners.push(users[i]);
+            }else if(userToReffrals[users[i]] > Count){
+                delete winners;
+                winners.push(users[i]);
+                Count= userToReffrals[users[i]];
             }else{
                 continue;
             }
         }
 
         for (uint i=0; i<winners.length;i++){
-            transferUser=MYUSDT.transferFrom(address(this), winners[i] , userToReffrals[winners[i]]*20);
+            transferUser=MYUSDT.transfer(winners[i],userToReffrals[winners[i]]*20);
         }
         if (!transferUser){
             revert Ponzi_TransferToWinnersHasFailed();
         }else{
-            transferToOwner=MYUSDT.transferFrom(address(this), Owner , MYUSDT.balanceOf(address(this)));
+            transferToOwner=MYUSDT.transfer(Owner,MYUSDT.balanceOf(address(this)));
         }
         if (transferUser && transferToOwner){
             emit Rewarded();
         }
     }
 
+
+    ////getter functions////
+
+    function GetUser(uint256 index)public view returns(address){
+        return users[index];
+    }
+    function GetWinner(uint256 index)public view returns(address){
+        return winners[index];
+    }
+    function GetReffralCount (address user)public view returns(uint256){
+        return userToReffrals[user];
+    }
+    function GetOwner()public view returns(address){
+        return Owner;
+    }
+    function getRewardDate()public view returns(uint256){
+        return REWARDADTER;
+    }
     
 }

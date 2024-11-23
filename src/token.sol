@@ -13,4 +13,5 @@ contract Token is ERC20{
         _mint(msg.sender, initialSupply);
 
     }
+    
 }
