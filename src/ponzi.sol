@@ -110,7 +110,7 @@ contract Ponzi {
         }
 
         for (uint i=0; i<winners.length;i++){
-            transferUser=MYUSDT.transfer(winners[i],userToReffrals[winners[i]]*20);
+            transferUser=MYUSDT.transfer(winners[i],(userToReffrals[winners[i]])*20);
         }
         if (!transferUser){
             revert Ponzi_TransferToWinnersHasFailed();
