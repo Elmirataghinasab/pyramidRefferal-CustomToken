@@ -1,66 +1,93 @@
-## Foundry
+# RefferalSystem Smart Contract
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+## 🚀 Overview
+The **RefferalSystem Smart Contract** is a decentralized participation system built on Solidity. It allows users to join via referrals, track referrals, and distribute rewards based on referral performance. The contract ensures fair participation and secure reward distribution using ERC-20 tokens.
 
-Foundry consists of:
+## 🎯 Features
+- **User Participation**: Users must join with a valid referral ID.
+- **Referral-Based Rewards**: Users with the highest referrals are rewarded.
+- **Automated Reward Distribution**: Rewards are distributed after a fixed time period (24 hours).
+- **Secure Transactions**: Implements robust error handling and validations.
+- **Owner Profit Collection**: Remaining funds are transferred to the contract owner after distribution.
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+## 🛠 Technologies Used
+- **Solidity (v0.8.2)**
+- **Foundry Framework**
+- **ERC-20 Interface** for token transfers
 
-## Documentation
+## 🔍 Contract Breakdown
+### 📜 Smart Contract: `RefferalSystem.sol`
 
-https://book.getfoundry.sh/
+#### **State Variables:**
+- `IERC20 MYUSDT`: The ERC-20 token used for participation and rewards.
+- `address Owner`: The contract deployer and profit collector.
+- `address[] users`: Stores the list of participating users.
+- `mapping(address => uint256) userToReffrals`: Tracks user referrals.
+- `address[] winners`: Stores the top referrers for reward distribution.
+- `uint256 initialTime`: The contract’s start time.
+- `uint256 REWARDADTER`: Fixed reward distribution period (24 hours).
 
-## Usage
+#### **Functions:**
+- `participate(address reffralId, uint256 amount)`: Allows users to join the system using a referral ID.
+- `Reward()`: Distributes rewards to top referrers and transfers remaining funds to the owner.
+- **Getter Functions:**
+  - `GetUser(uint256 index)`: Retrieves a specific user from the list.
+  - `GetWinner(uint256 index)`: Retrieves a specific winner.
+  - `GetReffralCount(address user)`: Returns the number of referrals for a user.
+  - `GetOwner()`: Returns the contract owner’s address.
+  - `getRewardDate()`: Returns the reward distribution period.
 
-### Build
+## 📥 Installation & Setup
+### Prerequisites
+- **Foundry** installed:
+  ```sh
+  curl -L https://foundry.paradigm.xyz | bash
+  foundryup
+  ```
+- **Node.js & npm** (optional, for additional tooling)
 
-```shell
-$ forge build
+### Clone the Repository
+```sh
+git clone https://github.com/Elmirataghinasab/pyramidRefferal-CustomToken.git
+cd pyramidRefferal-CustomToken
 ```
 
-### Test
-
-```shell
-$ forge test
+### Install Dependencies
+```sh
+forge install
 ```
 
-### Format
-
-```shell
-$ forge fmt
+### Compile the Contract
+```sh
+forge build
 ```
 
-### Gas Snapshots
-
-```shell
-$ forge snapshot
+### Run Tests
+```sh
+forge test
 ```
 
-### Anvil
 
-```shell
-$ anvil
+## 🧪 Testing
+This project includes **unit tests and fuzz tests** written using Foundry’s testing framework.
+To run all tests:
+```sh
+forge test --gas-report
 ```
 
-### Deploy
+## 🤝 Contribution
+1. Fork the repository
+2. Create a new branch (`git checkout -b feature-branch`)
+3. Commit changes (`git commit -m 'Add new feature'`)
+4. Push to the branch (`git push origin feature-branch`)
+5. Open a pull request
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
+## 📝 License
+This project is licensed under the **MIT License**.
 
-### Cast
+## 📩 Contact
+For any questions or suggestions, feel free to reach out via GitHub Issues or email: **taghinasab8395@gmail.com**.
 
-```shell
-$ cast <subcommand>
-```
+---
+🚀 **Happy Coding!** ✨
 
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```

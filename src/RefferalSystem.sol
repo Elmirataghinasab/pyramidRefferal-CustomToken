@@ -17,15 +17,15 @@ interface IERC20 {
 
 
 
-contract Ponzi {
+contract RefferalSystem {
 
-    error Ponzi_PleaseSendMoreToken();
-    error Ponzi_YouCannnotEnterWithOutReffralId();
-    error Ponzi_YourTransactionHasFailed();
-    error Ponzi_YourReffralIdIsWrong();
-    error Ponzi_YouHaveParticipatedBefore();
-    error Ponzi_TransferToWinnersHasFailed();
-    error Ponzi_ThisIsNotTheTimeFotDistribution();
+    error RefferalSystem_PleaseSendMoreToken();
+    error RefferalSystem_YouCannnotEnterWithOutReffralId();
+    error RefferalSystem_YourTransactionHasFailed();
+    error RefferalSystem_YourReffralIdIsWrong();
+    error RefferalSystem_YouHaveParticipatedBefore();
+    error RefferalSystem_TransferToWinnersHasFailed();
+    error RefferalSystem_ThisIsNotTheTimeFotDistribution();
 
 
     event participated(address indexed user, address refrallId);
@@ -60,23 +60,23 @@ contract Ponzi {
             }}
         for (uint i=1; i<users.length;i++){
             if (users[i] == msg.sender ) {
-               revert Ponzi_YouHaveParticipatedBefore(); 
+               revert RefferalSystem_YouHaveParticipatedBefore(); 
             }
         }
 
 
         if(amount < 100 ){
-            revert Ponzi_PleaseSendMoreToken();
+            revert RefferalSystem_PleaseSendMoreToken();
         }else if(reffralId == address(0)){
-            revert Ponzi_YouCannnotEnterWithOutReffralId();
+            revert RefferalSystem_YouCannnotEnterWithOutReffralId();
         }else if(exist == false){
-            revert Ponzi_YourReffralIdIsWrong();
+            revert RefferalSystem_YourReffralIdIsWrong();
         }
 
         bool success = MYUSDT.transferFrom(msg.sender,address(this), amount);
 
         if (!success){
-            revert Ponzi_YourTransactionHasFailed();
+            revert RefferalSystem_YourTransactionHasFailed();
         }else{            
             users.push(msg.sender);
             userToReffrals[reffralId]++;
@@ -89,7 +89,7 @@ contract Ponzi {
     function Reward()public{
 
         if (block.timestamp < initialTime+REWARDADTER){
-            revert Ponzi_ThisIsNotTheTimeFotDistribution();
+            revert RefferalSystem_ThisIsNotTheTimeFotDistribution();
         }
 
         uint256 Count=0;
@@ -113,7 +113,7 @@ contract Ponzi {
             transferUser=MYUSDT.transfer(winners[i],(userToReffrals[winners[i]])*20);
         }
         if (!transferUser){
-            revert Ponzi_TransferToWinnersHasFailed();
+            revert RefferalSystem_TransferToWinnersHasFailed();
         }else{
             transferToOwner=MYUSDT.transfer(Owner,MYUSDT.balanceOf(address(this)));
         }
@@ -137,7 +137,7 @@ contract Ponzi {
     function GetOwner()public view returns(address){
         return Owner;
     }
-    function getRewardDate()public view returns(uint256){
+    function getRewardDate()public pure returns(uint256){
         return REWARDADTER;
     }
     

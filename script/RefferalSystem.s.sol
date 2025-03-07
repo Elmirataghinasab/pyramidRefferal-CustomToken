@@ -3,12 +3,12 @@ pragma solidity ^0.8.2;
 
 import {Script, console} from "forge-std/Script.sol";
 import {Token} from "../src/token.sol";
-import {Ponzi} from "../src/ponzi.sol";
+import {RefferalSystem} from "../src/RefferalSystem.sol";
 
 
 
 
-contract PonziScript is Script{
+contract RefferalSystemScript is Script{
  
     function runToken(uint256 initialSupply)external returns (Token){
         vm.startBroadcast();
@@ -18,12 +18,12 @@ contract PonziScript is Script{
         return CToken;
     }
 
-    function runPonzi(address tokenAddress)external returns(Ponzi){
+    function runRefferalSystem(address tokenAddress)external returns(RefferalSystem){
         vm.startBroadcast();
-        Ponzi MPonzi=new Ponzi(tokenAddress);
+        RefferalSystem refferalSystem=new RefferalSystem(tokenAddress);
         vm.stopBroadcast();
 
-        return MPonzi;
+        return refferalSystem;
 
     }
 
